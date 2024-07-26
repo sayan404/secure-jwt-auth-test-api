@@ -5,7 +5,6 @@ import {
   ErrorEncodeResponse,
 } from "@/jwt-ts-package/src/type";
 import { NextRequest, NextResponse } from "next/server";
-
 const SECRET = "your-256-bit-secret"; // Use environment variables in production
 
 export async function POST(req: NextRequest) {

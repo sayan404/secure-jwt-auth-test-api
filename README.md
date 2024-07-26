@@ -2,7 +2,12 @@
 
 ```bash
 git clone https://github.com/sayan404/simpler-jwt-auth.git
+
 cd simpler-jwt-auth
+
+npm install
+
+npm run dev
 ```
 
 # Usage
@@ -113,6 +118,6 @@ export async function POST(req: NextRequest) {
 
 Explore and interact with the `simpler-jwt-auth` package using the API Playground set up for testing. You can experiment with encoding, decoding, and validating JWTs through the following link:
 
-- **[API Playground on Postman](https://app.getpostman.com/join-team?invite_code=89ffb411ab1a8c3a3d425e5a5e0db76c)**
+### **[API Playground on Postman](https://app.getpostman.com/join-team?invite_code=89ffb411ab1a8c3a3d425e5a5e0db76c)**
 
-Feel free to test various endpoints and see how the package functions in different scenarios and if something weired occurs you can reach out to me at sayanmajumder0002@gmail.com.
+Feel free to test various endpoints and see how the package functions in different scenarios and if something weired occurs please feel free to reach out to me at sayanmajumder0002@gmail.com.
