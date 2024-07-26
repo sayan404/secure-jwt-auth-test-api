@@ -1,59 +1,114 @@
 # Setup
-`````bash
+
+```bash
 git clone https://github.com/sayan404/simpler-jwt-auth.git
 cd simpler-jwt-auth
-`````
+```
 
 # Usage
+
 ### Encoding a JWT
+
 To encode a JWT, use the encode_jwt method:
 
-`````bash
-import { encode_jwt } from 'simpler-jwt-auth';
+```bash
+import { encode_jwt } from "@/jwt-ts-package/src";
+import {
+  EncodeReponse,
+  SuccessEncodeReponse,
+  ErrorEncodeResponse,
+} from "@/jwt-ts-package/src/type";
+import { NextRequest, NextResponse } from "next/server";
 
-const secret = 'your-256-bit-secret';
-const id = '12345';
-const payload = { data: 'test' };
-const ttl = 3600; // Time to live in seconds
-const audience = 'https://myapi.example.com';
-const issuer = 'https://auth.example.com';
+const SECRET = "your-256-bit-secret"; // Use environment variables in production
 
-const token = encode_jwt(secret, id, payload, ttl, audience, issuer);
-console.log('Encoded JWT:', token);
+export async function POST(req: NextRequest) {
+  const { id, payload, ttl, audience, issuer } = await req.json();
+  try {
+    if (id) {
+      const response: EncodeReponse = encode_jwt(
+        SECRET,
+        id,
+        payload,
+        ttl,
+        audience,
+        issuer
+      );
 
-`````
-
-### Decoding a JWT
-To decode a JWT, use the decode_jwt method:
-
-`````bash
-import { decode_jwt } from 'simpler-jwt-auth';
-
-const secret = 'your-256-bit-secret';
-const token = 'your-jwt-token';
-
-try {
-  const decoded = decode_jwt(secret, token);
-  console.log('Decoded JWT:', decoded);
-} catch (error) {
-  console.error('Error decoding JWT:', error.message);
+      if (response.success) {
+        const { token } = response as SuccessEncodeReponse;
+        return NextResponse.json({ token }, { status: 200 });
+      }
+      const { message } = response as ErrorEncodeResponse;
+      return NextResponse.json({ message }, { status: 500 });
+    }
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: "Something went wrong while decoding" },
+      { status: 500 }
+    );
+  }
 }
 
-`````
+```
+
+### Decoding a JWT
+
+To decode a JWT, use the decode_jwt method:
+
+```bash
+import { decode_jwt } from "@/jwt-ts-package/src";
+import { NextRequest, NextResponse } from "next/server";
+const SECRET = "your-256-bit-secret"; // Use environment variables
+
+export async function POST(req: NextRequest) {
+  const { token } = await req.json();
+
+  try {
+    const decoded = decode_jwt(SECRET, token);
+    if (decoded.success) {
+      return NextResponse.json(decoded, { status: 200 });
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Invalid or expired token" },
+      { status: 401 }
+    );
+  }
+}
+
+```
+
 ### Validating a JWT
 
 To validate a JWT, use the validate_jwt method:
 
-`````bash
-import { validate_jwt } from 'simpler-jwt-auth';
+```bash
 
-const secret = 'your-256-bit-secret';
-const token = 'your-jwt-token';
+import { validate_jwt } from "@/jwt-ts-package/src";
+import { NextRequest, NextResponse } from "next/server";
 
-const isValid = validate_jwt(secret, token);
-console.log('Is JWT valid?', isValid);
+const SECRET = "your-256-bit-secret"; // Use your environment variables
 
-`````
+export async function POST(req: NextRequest) {
+  const { token, expectedAud, expectedIss } = await req.json();
+
+  const isValid = validate_jwt(SECRET, token, expectedAud, expectedIss);
+  if (!isValid) {
+    return NextResponse.json(
+      { valid: isValid, message: "Invalid or expired token" },
+      { status: 401 }
+    );
+  }
+  return NextResponse.json(
+    { valid: isValid, message: "Valid Token" },
+    { status: 200 }
+  );
+}
+
+```
+
 ## API Playground
 
 Explore and interact with the `simpler-jwt-auth` package using the API Playground set up for testing. You can experiment with encoding, decoding, and validating JWTs through the following link:
