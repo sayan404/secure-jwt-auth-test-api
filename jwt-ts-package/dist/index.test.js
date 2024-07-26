@@ -10,7 +10,7 @@ const issuer = "https://auth.example.com";
 describe("JWT Package", () => {
     let token;
     test("should encode a JWT with given payload, aud, iss, and ttl", () => {
-        const result = (0, index_1.encode_jwt)(secret, id, payload, ttl, audience, issuer);
+        const result = (0, index_1.genToken)(secret, id, payload, ttl, audience, issuer);
         expect(result.success).toBe(true);
         if (result.success) {
             token = result.token;
@@ -18,21 +18,21 @@ describe("JWT Package", () => {
         }
     });
     test("should validate a JWT with correct aud and iss", () => {
-        const isValid = (0, index_1.validate_jwt)(secret, token, audience, issuer);
+        const isValid = (0, index_1.validateToken)(secret, token, audience, issuer);
         expect(isValid).toBe(true);
     });
     test("should invalidate a JWT with incorrect aud", () => {
-        const isValid = (0, index_1.validate_jwt)(secret, token, "https://wrongapi.example.com", issuer);
+        const isValid = (0, index_1.validateToken)(secret, token, "https://wrongapi.example.com", issuer);
         expect(isValid).toBe(false);
     });
     test("should invalidate a JWT with incorrect iss", () => {
-        const isValid = (0, index_1.validate_jwt)(secret, token, audience, "https://wrongauth.example.com");
+        const isValid = (0, index_1.validateToken)(secret, token, audience, "https://wrongauth.example.com");
         expect(isValid).toBe(false);
     });
     test("should invalidate an expired JWT", () => {
-        const expiredTokenResponse = (0, index_1.encode_jwt)(secret, id, payload, -1, audience, issuer); // Token that expires immediately
+        const expiredTokenResponse = (0, index_1.genToken)(secret, id, payload, -1, audience, issuer); // Token that expires immediately
         if (expiredTokenResponse.success) {
-            const result = (0, index_1.decode_jwt)(secret, expiredTokenResponse.token);
+            const result = (0, index_1.decodeToken)(secret, expiredTokenResponse.token);
             expect(result.success).toBe(false);
             if (!result.success) {
                 const errorResult = result;

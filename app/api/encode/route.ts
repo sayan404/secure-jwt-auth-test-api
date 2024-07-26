@@ -1,4 +1,4 @@
-import { encode_jwt } from "@/jwt-ts-package/src";
+import { genToken } from "@/jwt-ts-package/src";
 import {
   EncodeReponse,
   SuccessEncodeReponse,
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const { id, payload, ttl, audience, issuer } = await req.json();
   try {
     if (id) {
-      const response: EncodeReponse = encode_jwt(
+      const response: EncodeReponse = genToken(
         SECRET,
         id,
         payload,

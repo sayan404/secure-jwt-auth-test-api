@@ -53,7 +53,7 @@ const decode = (secret: string, token: string) => {
   return { header, _id: id, iat, exp, payload: payloadWithoutId, aud, iss };
 };
 
-export const encode_jwt = (
+export const genToken = (
   secret: string,
   id: string | number,
   payload: object,
@@ -84,7 +84,7 @@ export const encode_jwt = (
   }
 };
 
-export const decode_jwt = (secret: string, token: string): DecodeReponse => {
+export const decodeToken = (secret: string, token: string): DecodeReponse => {
   try {
     const { _id, iat, exp, payload, aud, iss } = decode(secret, token);
     if (exp && exp <= Math.floor(Date.now() / 1000))
@@ -103,7 +103,7 @@ export const decode_jwt = (secret: string, token: string): DecodeReponse => {
   }
 };
 
-export const validate_jwt = (
+export const validateToken = (
   secret: string,
   token: string,
   expectedAud?: string,

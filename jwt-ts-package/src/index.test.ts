@@ -1,4 +1,4 @@
-import { encode_jwt, decode_jwt, validate_jwt } from "./index";
+import { genToken, decodeToken, validateToken } from "./index";
 import {
   ErrorDecodeResponse,
   SuccessEncodeReponse,
@@ -17,7 +17,7 @@ describe("JWT Package", () => {
   let token: string;
 
   test("should encode a JWT with given payload, aud, iss, and ttl", () => {
-    const result: EncodeReponse = encode_jwt(
+    const result: EncodeReponse = genToken(
       secret,
       id,
       payload,
@@ -33,14 +33,13 @@ describe("JWT Package", () => {
     }
   });
 
-
   test("should validate a JWT with correct aud and iss", () => {
-    const isValid = validate_jwt(secret, token, audience, issuer);
+    const isValid = validateToken(secret, token, audience, issuer);
     expect(isValid).toBe(true);
   });
 
   test("should invalidate a JWT with incorrect aud", () => {
-    const isValid = validate_jwt(
+    const isValid = validateToken(
       secret,
       token,
       "https://wrongapi.example.com",
@@ -50,7 +49,7 @@ describe("JWT Package", () => {
   });
 
   test("should invalidate a JWT with incorrect iss", () => {
-    const isValid = validate_jwt(
+    const isValid = validateToken(
       secret,
       token,
       audience,
@@ -60,7 +59,7 @@ describe("JWT Package", () => {
   });
 
   test("should invalidate an expired JWT", () => {
-    const expiredTokenResponse: EncodeReponse = encode_jwt(
+    const expiredTokenResponse: EncodeReponse = genToken(
       secret,
       id,
       payload,
@@ -69,7 +68,7 @@ describe("JWT Package", () => {
       issuer
     ); // Token that expires immediately
     if (expiredTokenResponse.success) {
-      const result: DecodeReponse = decode_jwt(
+      const result: DecodeReponse = decodeToken(
         secret,
         (expiredTokenResponse as SuccessEncodeReponse).token
       );

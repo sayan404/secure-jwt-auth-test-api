@@ -34,7 +34,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate_jwt = exports.decode_jwt = exports.encode_jwt = void 0;
+exports.validateToken = exports.decodeToken = exports.genToken = void 0;
 const crypto = __importStar(require("crypto"));
 const base64UrlEncode = (input) => {
     return input.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -77,7 +77,7 @@ const decode = (secret, token) => {
     const { id, iat, exp, aud, iss } = payload, payloadWithoutId = __rest(payload, ["id", "iat", "exp", "aud", "iss"]);
     return { header, _id: id, iat, exp, payload: payloadWithoutId, aud, iss };
 };
-const encode_jwt = (secret, id, payload, ttl, aud, iss) => {
+const genToken = (secret, id, payload, ttl, aud, iss) => {
     const header = {
         alg: "HS256",
         typ: "JWT",
@@ -92,8 +92,8 @@ const encode_jwt = (secret, id, payload, ttl, aud, iss) => {
         return { success: false, message: error.message };
     }
 };
-exports.encode_jwt = encode_jwt;
-const decode_jwt = (secret, token) => {
+exports.genToken = genToken;
+const decodeToken = (secret, token) => {
     try {
         const { _id, iat, exp, payload, aud, iss } = decode(secret, token);
         if (exp && exp <= Math.floor(Date.now() / 1000))
@@ -112,8 +112,8 @@ const decode_jwt = (secret, token) => {
         return { success: false, message: error.message };
     }
 };
-exports.decode_jwt = decode_jwt;
-const validate_jwt = (secret, token, expectedAud, expectedIss) => {
+exports.decodeToken = decodeToken;
+const validateToken = (secret, token, expectedAud, expectedIss) => {
     try {
         const { exp, aud, iss } = decode(secret, token);
         if (exp &&
@@ -127,4 +127,4 @@ const validate_jwt = (secret, token, expectedAud, expectedIss) => {
         return false;
     }
 };
-exports.validate_jwt = validate_jwt;
+exports.validateToken = validateToken;

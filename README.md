@@ -14,10 +14,10 @@ npm run dev
 
 ### Encoding a JWT
 
-To encode a JWT, use the encode_jwt method:
+To encode a JWT, use the genToken method:
 
 ```bash
-import { encode_jwt } from "@/jwt-ts-package/src";
+import { genToken } from "@/jwt-ts-package/src";
 import {
   EncodeReponse,
   SuccessEncodeReponse,
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   const { id, payload, ttl, audience, issuer } = await req.json();
   try {
     if (id) {
-      const response: EncodeReponse = encode_jwt(
+      const response: EncodeReponse = genToken(
         SECRET,
         id,
         payload,
@@ -60,10 +60,10 @@ export async function POST(req: NextRequest) {
 
 ### Decoding a JWT
 
-To decode a JWT, use the decode_jwt method:
+To decode a JWT, use the decodeToken method:
 
 ```bash
-import { decode_jwt } from "@/jwt-ts-package/src";
+import { decodeToken } from "@/jwt-ts-package/src";
 import { NextRequest, NextResponse } from "next/server";
 const SECRET = "your-256-bit-secret"; // Use environment variables
 
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
   const { token } = await req.json();
 
   try {
-    const decoded = decode_jwt(SECRET, token);
+    const decoded = decodeToken(SECRET, token);
     if (decoded.success) {
       return NextResponse.json(decoded, { status: 200 });
     }
@@ -87,11 +87,11 @@ export async function POST(req: NextRequest) {
 
 ### Validating a JWT
 
-To validate a JWT, use the validate_jwt method:
+To validate a JWT, use the validateToken method:
 
 ```bash
 
-import { validate_jwt } from "@/jwt-ts-package/src";
+import { validateToken } from "@/jwt-ts-package/src";
 import { NextRequest, NextResponse } from "next/server";
 
 const SECRET = "your-256-bit-secret"; // Use your environment variables
@@ -99,7 +99,7 @@ const SECRET = "your-256-bit-secret"; // Use your environment variables
 export async function POST(req: NextRequest) {
   const { token, expectedAud, expectedIss } = await req.json();
 
-  const isValid = validate_jwt(SECRET, token, expectedAud, expectedIss);
+  const isValid = validateToken(SECRET, token, expectedAud, expectedIss);
   if (!isValid) {
     return NextResponse.json(
       { valid: isValid, message: "Invalid or expired token" },
