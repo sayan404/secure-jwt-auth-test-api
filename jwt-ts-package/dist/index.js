@@ -22,6 +22,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate_jwt = exports.decode_jwt = exports.encode_jwt = void 0;
 const crypto = __importStar(require("crypto"));
@@ -63,23 +74,18 @@ const decode = (secret, token) => {
         throw new Error("Invalid token signature");
     const header = JSON.parse(base64UrlDecode(headerBase64));
     const payload = JSON.parse(base64UrlDecode(payloadBase64));
-    const { id, iat, exp, ...payloadWithoutId } = payload;
-    return { header, _id: id, iat, exp, payload: payloadWithoutId };
+    const { id, iat, exp, aud, iss } = payload, payloadWithoutId = __rest(payload, ["id", "iat", "exp", "aud", "iss"]);
+    return { header, _id: id, iat, exp, payload: payloadWithoutId, aud, iss };
 };
-const encode_jwt = (secret, id, payload, ttl) => {
+const encode_jwt = (secret, id, payload, ttl, aud, iss) => {
     const header = {
         alg: "HS256",
         typ: "JWT",
     };
     const issuedAt = Math.floor(Date.now() / 1000);
-    const jwtPayload = {
-        ...payload,
-        id,
-        iat: issuedAt,
-        ...(ttl ? { exp: issuedAt + ttl } : { exp: issuedAt }),
-    };
+    const jwtPayload = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, payload), { id, iat: issuedAt }), (ttl ? { exp: issuedAt + ttl } : { exp: issuedAt })), (aud ? { aud } : {})), (iss ? { iss } : {}));
     try {
-        const token = encode(secret, jwtPayload, header);
+        const token = encode(secret, header, jwtPayload);
         return { success: true, token };
     }
     catch (error) {
@@ -89,13 +95,15 @@ const encode_jwt = (secret, id, payload, ttl) => {
 exports.encode_jwt = encode_jwt;
 const decode_jwt = (secret, token) => {
     try {
-        const { _id, iat, exp, payload } = decode(secret, token);
+        const { _id, iat, exp, payload, aud, iss } = decode(secret, token);
         if (exp && exp <= Math.floor(Date.now() / 1000))
             throw new Error("Oops! Token Expired");
         return {
             success: true,
             id: _id,
-            payload: { ...payload },
+            payload: Object.assign({}, payload),
+            aud,
+            iss,
             created_at: iat * 1000,
             expires_at: exp * 1000,
         };
@@ -105,14 +113,17 @@ const decode_jwt = (secret, token) => {
     }
 };
 exports.decode_jwt = decode_jwt;
-const validate_jwt = (secret, token) => {
+const validate_jwt = (secret, token, expectedAud, expectedIss) => {
     try {
-        const { iat, exp } = decode(secret, token);
-        if (exp && iat && exp >= Math.floor(Date.now() / 1000))
+        const { exp, aud, iss } = decode(secret, token);
+        if (exp &&
+            exp >= Math.floor(Date.now() / 1000) &&
+            (expectedAud ? aud === expectedAud : true) &&
+            (expectedIss ? iss === expectedIss : true))
             return true;
         return false;
     }
-    catch {
+    catch (_a) {
         return false;
     }
 };
