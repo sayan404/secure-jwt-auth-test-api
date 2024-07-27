@@ -10,7 +10,7 @@
 ```bash
 git clone https://github.com/sayan404/secure-jwt-auth-test-api.git
 
-cd secure-jwt-auth
+cd secure-jwt-auth-test-api
 
 npm install
 
