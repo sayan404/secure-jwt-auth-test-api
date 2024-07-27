@@ -1,7 +1,6 @@
-import { decodeToken } from "@/jwt-ts-package/src";
 import { NextRequest, NextResponse } from "next/server";
 const SECRET = "your-256-bit-secret"; // Use environment variables 
-
+import { decodeToken } from "secure-jwt-auth";
 export async function POST(req: NextRequest) {
   const { token } = await req.json();
 

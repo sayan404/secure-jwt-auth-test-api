@@ -1,9 +1,16 @@
+<p align="center">
+  <img src="https://firebasestorage.googleapis.com/v0/b/uploadika-b352f.appspot.com/o/images%2Fsecure-jwt.png?alt=media&token=0f3ecf86-a6b4-49ec-a3af-7de8213ee11a" alt="secure-jwt-auth">
+</p>
+
+<br>
+<br>
+
 # Setup
 
 ```bash
-git clone https://github.com/sayan404/simpler-jwt-auth.git
+git clone https://github.com/sayan404/secure-jwt-auth.git
 
-cd simpler-jwt-auth
+cd secure-jwt-auth
 
 npm install
 
@@ -17,45 +24,9 @@ npm run dev
 To encode a JWT, use the genToken method:
 
 ```bash
-import { genToken } from "@/jwt-ts-package/src";
-import {
-  EncodeReponse,
-  SuccessEncodeReponse,
-  ErrorEncodeResponse,
-} from "@/jwt-ts-package/src/type";
-import { NextRequest, NextResponse } from "next/server";
+import { genToken } from 'secure-jwt-auth';
 
-const SECRET = "your-256-bit-secret"; // Use environment variables in production
-
-export async function POST(req: NextRequest) {
-  const { id, payload, ttl, audience, issuer } = await req.json();
-  try {
-    if (id) {
-      const response: EncodeReponse = genToken(
-        SECRET,
-        id,
-        payload,
-        ttl,
-        audience,
-        issuer
-      );
-
-      if (response.success) {
-        const { token } = response as SuccessEncodeReponse;
-        return NextResponse.json({ token }, { status: 200 });
-      }
-      const { message } = response as ErrorEncodeResponse;
-      return NextResponse.json({ message }, { status: 500 });
-    }
-    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: "Something went wrong while decoding" },
-      { status: 500 }
-    );
-  }
-}
-
+const token = genToken(SECRET, id , payload , ttl);
 ```
 
 ### Decoding a JWT
@@ -63,26 +34,9 @@ export async function POST(req: NextRequest) {
 To decode a JWT, use the decodeToken method:
 
 ```bash
-import { decodeToken } from "@/jwt-ts-package/src";
-import { NextRequest, NextResponse } from "next/server";
-const SECRET = "your-256-bit-secret"; // Use environment variables
+import { decodeToken } from 'secure-jwt-auth';
 
-export async function POST(req: NextRequest) {
-  const { token } = await req.json();
-
-  try {
-    const decoded = decodeToken(SECRET, token);
-    if (decoded.success) {
-      return NextResponse.json(decoded, { status: 200 });
-    }
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Invalid or expired token" },
-      { status: 401 }
-    );
-  }
-}
-
+const decoded = decodeToken(SECRET, token);
 ```
 
 ### Validating a JWT
@@ -90,34 +44,15 @@ export async function POST(req: NextRequest) {
 To validate a JWT, use the validateToken method:
 
 ```bash
+import { validateToken } from 'secure-jwt-auth';
 
-import { validateToken } from "@/jwt-ts-package/src";
-import { NextRequest, NextResponse } from "next/server";
-
-const SECRET = "your-256-bit-secret"; // Use your environment variables
-
-export async function POST(req: NextRequest) {
-  const { token, expectedAud, expectedIss } = await req.json();
-
-  const isValid = validateToken(SECRET, token, expectedAud, expectedIss);
-  if (!isValid) {
-    return NextResponse.json(
-      { valid: isValid, message: "Invalid or expired token" },
-      { status: 401 }
-    );
-  }
-  return NextResponse.json(
-    { valid: isValid, message: "Valid Token" },
-    { status: 200 }
-  );
-}
-
+const isValid = validateToken(SECRET, token);
 ```
 
 ## API Playground
 
-Explore and interact with the `simpler-jwt-auth` package using the API Playground set up for testing. You can experiment with encoding, decoding, and validating JWTs through the following link:
+Explore and interact with the `secure-jwt-auth` package using the API Playground set up for testing. You can experiment with encoding, decoding, and validating JWTs through the following link:
 
-### **[API Playground on Postman](https://app.getpostman.com/join-team?invite_code=89ffb411ab1a8c3a3d425e5a5e0db76c)**
+### **[API Playground on Postman](https://documenter.getpostman.com/view/23890489/2sA3kYk1S8)**
 
 Feel free to test various endpoints and see how the package functions in different scenarios and if something weired occurs please feel free to reach out to me at sayanmajumder0002@gmail.com.

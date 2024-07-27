@@ -1,8 +1,6 @@
-import { validateToken } from "@/jwt-ts-package/src";
 import { NextRequest, NextResponse } from "next/server";
-
+import { validateToken } from "secure-jwt-auth";
 const SECRET = "your-256-bit-secret"; // Use your environment variables
-
 export async function POST(req: NextRequest) {
   const { token, expectedAud, expectedIss } = await req.json();
 

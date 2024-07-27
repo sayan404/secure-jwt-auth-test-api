@@ -1,6 +1,6 @@
 {
   "name": "jwt-demo-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "jwt-ts-package": "file:../jwt-ts-package",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "secure-jwt-auth": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",

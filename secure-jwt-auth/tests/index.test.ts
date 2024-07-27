@@ -1,10 +1,11 @@
-import { genToken, decodeToken, validateToken } from "./index";
-import {
-  ErrorDecodeResponse,
-  SuccessEncodeReponse,
-  DecodeReponse,
-  EncodeReponse,
-} from "./type";
+import { genToken, decodeToken, validateToken } from "../dist/index";
+import { 
+  ErrorDecodeResponse, 
+  SuccessEncodeReponse, 
+  DecodeReponse, 
+  EncodeReponse 
+} from "../dist/type";
+
 
 const secret = "your-256-bit-secret";
 const id = "12345";

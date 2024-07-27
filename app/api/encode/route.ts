@@ -1,10 +1,11 @@
-import { genToken } from "@/jwt-ts-package/src";
+import { genToken } from "secure-jwt-auth";
 import {
   EncodeReponse,
   SuccessEncodeReponse,
   ErrorEncodeResponse,
-} from "@/jwt-ts-package/src/type";
+} from "secure-jwt-auth/dist/type";
 import { NextRequest, NextResponse } from "next/server";
+
 const SECRET = "your-256-bit-secret"; // Use environment variables in production
 
 export async function POST(req: NextRequest) {
