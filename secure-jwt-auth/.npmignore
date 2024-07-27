@@ -1,8 +1,0 @@
-src/
-tests/
-.env
-.env.local
-node_modules/
-tsconfig.json
-jest.config.js
-package-lock.json
