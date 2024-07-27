@@ -8,7 +8,7 @@
 # Setup
 
 ```bash
-git clone https://github.com/sayan404/secure-jwt-auth.git
+git clone https://github.com/sayan404/secure-jwt-auth-test-api.git
 
 cd secure-jwt-auth
 
