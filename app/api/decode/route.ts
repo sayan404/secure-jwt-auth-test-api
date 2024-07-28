@@ -9,7 +9,6 @@ import { decodeToken } from "secure-jwt-auth";
 
 export async function POST(req: NextRequest) {
   const { token } = await req.json();
-
   try {
     const decoded: DecodeReponse = decodeToken(SECRET, token);
     if (decoded.success) {
