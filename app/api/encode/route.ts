@@ -1,12 +1,12 @@
 import { genToken } from "secure-jwt-auth";
 import {
   EncodeReponse,
-  SuccessEncodeReponse,
+  SuccessEncodeResponse,
   ErrorEncodeResponse,
 } from "secure-jwt-auth/dist/type";
 import { NextRequest, NextResponse } from "next/server";
 
-const SECRET = "your-256-bit-secret"; // Use environment variables in production
+const SECRET = process.env.JWT_SECRET!;
 
 export async function POST(req: NextRequest) {
   const { id, payload, ttl, audience, issuer } = await req.json();
@@ -22,11 +22,11 @@ export async function POST(req: NextRequest) {
       );
 
       if (response.success) {
-        const { token } = response as SuccessEncodeReponse;
+        const { token } = response as SuccessEncodeResponse;
         return NextResponse.json({ token }, { status: 200 });
       }
       const { message } = response as ErrorEncodeResponse;
-      return NextResponse.json({ message }, { status: 500 });
+      return NextResponse.json({ message }, { status: 400 });
     }
     return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
   } catch (error: any) {

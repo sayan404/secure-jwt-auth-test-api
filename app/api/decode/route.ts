@@ -1,18 +1,27 @@
+import {
+  DecodeReponse,
+  ErrorDecodeResponse,
+  SuccessDecodeResponse,
+} from "secure-jwt-auth/dist/type";
 import { NextRequest, NextResponse } from "next/server";
-const SECRET = "your-256-bit-secret"; // Use environment variables 
+const SECRET = process.env.JWT_SECRET!
 import { decodeToken } from "secure-jwt-auth";
+
 export async function POST(req: NextRequest) {
   const { token } = await req.json();
 
   try {
-    const decoded = decodeToken(SECRET, token);
+    const decoded: DecodeReponse = decodeToken(SECRET, token);
     if (decoded.success) {
-      return NextResponse.json(decoded, { status: 200 });
+      const successResponse = decoded as SuccessDecodeResponse;
+      return NextResponse.json(successResponse, { status: 200 });
     }
-  } catch (error) {
+    const { message } = decoded as ErrorDecodeResponse;
+    return NextResponse.json({ message }, { status: 498 });
+  } catch (error: any) {
     return NextResponse.json(
-      { message: "Invalid or expired token" },
-      { status: 401 }
+      { message: error.message || "Something went wrong" },
+      { status: 500 }
     );
   }
 }
