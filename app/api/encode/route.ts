@@ -1,6 +1,6 @@
 import { genToken } from "secure-jwt-auth";
 import {
-  EncodeReponse,
+  EncodeResponse,
   SuccessEncodeResponse,
   ErrorEncodeResponse,
 } from "secure-jwt-auth/dist/type";
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const { id, payload, ttl, audience, issuer } = await req.json();
   try {
     if (id) {
-      const response: EncodeReponse = genToken(
+      const response: EncodeResponse = genToken(
         SECRET,
         id,
         payload,

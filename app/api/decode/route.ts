@@ -1,16 +1,16 @@
 import {
-  DecodeReponse,
+  DecodeResponse,
   ErrorDecodeResponse,
   SuccessDecodeResponse,
 } from "secure-jwt-auth/dist/type";
 import { NextRequest, NextResponse } from "next/server";
-const SECRET = process.env.JWT_SECRET!
+const SECRET = process.env.JWT_SECRET!;
 import { decodeToken } from "secure-jwt-auth";
 
 export async function POST(req: NextRequest) {
   const { token } = await req.json();
   try {
-    const decoded: DecodeReponse = decodeToken(SECRET, token);
+    const decoded: DecodeResponse = decodeToken(SECRET, token);
     if (decoded.success) {
       const successResponse = decoded as SuccessDecodeResponse;
       return NextResponse.json(successResponse, { status: 200 });

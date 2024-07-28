@@ -20,13 +20,13 @@ npm run dev
 # Usage
 
 ### Encoding a JWT
+Note: Although `timeToLive`, `audience`, `issuer` is an optional parameter, we set a 1-hour validation for the token by default.
 
 To encode a JWT, use the genToken method:
-
 ```bash
 import { genToken } from 'secure-jwt-auth';
 
-const token = genToken(SECRET, id , payload , ttl);
+const token = genToken(SECRET, id , payload , timeToLive , audience , issuer);
 ```
 
 ### Decoding a JWT
